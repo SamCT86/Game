@@ -1,3 +1,5 @@
+import { startConfetti, stopConfetti, removeConfetti } from './confetti.js';
+
 const playerScoreEl = document.getElementById('playerScore');
 const playerChoiceEl = document.getElementById('playerChoice');
 const computerScoreEl = document.getElementById('computerScore');
@@ -41,14 +43,20 @@ function checkResult(playerChoice) {
 // Check result, increase score, update resultText and display computer choice
 function updateScore(playerChoice) {
   if (playerChoice === computerChoice) {
+    removeConfetti();
     resultText.textContent = "It's a tie.";
   } else {
     const choice = choices[playerChoice];
     if (choice.defeats.indexOf(computerChoice) > -1) {
+      startConfetti();
       resultText.textContent = 'You Won!';
       playerScoreNumber++;
       playerScoreEl.textContent = playerScoreNumber;
+      setTimeout(() => {
+        stopConfetti();
+      }, 2000);
     } else {
+      removeConfetti();
       resultText.textContent = 'You Lost!';
       computerScoreNumber++;
       computerScoreEl.textContent = computerScoreNumber;
@@ -100,10 +108,12 @@ function displayComputerChoice() {
   }
 }
 
+window.select = select;
+
 // Passing player selection value and styling icons
 function select(playerChoice) {
   checkResult(playerChoice);
-  // Add 'selected' styling and playerChoice
+  // Add 'selected' styling and playerChoicell
   switch (playerChoice) {
     case 'rock':
       playerRock.classList.add('selected');
@@ -147,5 +157,7 @@ function resetAll() {
   resultText.textContent = '';
   resetSelected();
 }
+
+window.resetAll = resetAll;
 
 resetAll();
